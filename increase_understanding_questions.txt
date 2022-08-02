@@ -1,0 +1,8 @@
+Brainstorm a list of questions to ask about the following scenario:
+
+
+SCENARIO:
+<<BLOCK>>
+
+
+Brainstorm a list of questions to ask about this scenario:
