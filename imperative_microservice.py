@@ -20,6 +20,7 @@ def save_file(filepath, content):
 
 openai.api_key = open_file('openaiapikey.txt')
 service_name = 'heuristic_imperatives'
+content_prefix = 'Heuristic imperatives: '
 tempo = 30
 
 
@@ -109,15 +110,18 @@ if __name__ == '__main__':
         # reduce suffering
         prompt = open_file('reduce_suffering_brainstorm.txt').replace('<<BLOCK>>', textblock)
         suffering = gpt3_completion(prompt)
+        print('\n\n', suffering)
         save_and_send(suffering, 'Ideas to reduce suffering: ', 'suffering')
         # increase prosperity
         prompt = open_file('increase_prosperity_brainstorm.txt').replace('<<BLOCK>>', textblock)
         prosperity = gpt3_completion(prompt)
         save_and_send(prosperity, 'Ideas to increase prosperity: ', 'prosperity')
+        print('\n\n', prosperity)
         # increase understanding
         prompt = open_file('increase_understanding_brainstorm.txt').replace('<<BLOCK>>', textblock)
         understanding = gpt3_completion(prompt)
         save_and_send(understanding, 'Ideas to increase understanding: ', 'understanding')
+        print('\n\n', understanding)
         # curiosity (ask questions)
         prompt = open_file('increase_understanding_questions.txt').replace('<<BLOCK>>', textblock)
         questions = gpt3_completion(prompt)

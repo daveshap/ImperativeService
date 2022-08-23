@@ -5,4 +5,4 @@ SCENARIO:
 <<BLOCK>>
 
 
-Brainstorm a list of possible actions we could take that would increase understanding for all living things in this scenario:
+Brainstorm a list of possible actions we could take that would increase understanding for all intelligent beings in this scenario:
