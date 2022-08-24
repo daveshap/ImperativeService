@@ -8,6 +8,12 @@ import openai
 from time import time,sleep
 
 
+embedding_service_host=os.getenv('EMBEDDING_SERVICE_HOST', '127.0.0.1')
+embedding_service_port=os.getenv('EMBEDDING_SERVICE_PORT', '999')
+nexus_service_host=os.getenv('NEXUS_SERVICE_HOST', '127.0.0.1')
+nexus_service_port=os.getenv('NEXUS_SERVICE_PORT', '8888')
+
+
 def open_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as infile:
         return infile.read()
@@ -56,13 +62,13 @@ def get_embedding(payload):  # payload is a list of strings
     # payload example: ['bacon bacon bacon', 'ham ham ham']
     # response example:  [{'string': 'bacon bacon bacon', 'vector': '[1, 1 ... ]'}, {'string': 'ham ham ham', 'vector': '[1, 1 ... ]'}]
     # embedding is already rendered as a JSON-friendly string
-    url = 'http://127.0.0.1:999'  # currently the USEv5 service, about 0.02 seconds per transaction!
+    url = 'http://%s:%s' % (embedding_service_host, embedding_service_port)  # currently the USEv5 service, about 0.02 seconds per transaction!
     response = requests.request(method='POST', url=url, json=payload)
     return response.json()
 
 
 def nexus_send(payload):  # REQUIRED: content
-    url = 'http://127.0.0.1:8888/add'
+    url = 'http://%s:%s/add' % (nexus_service_host, nexus_service_port)
     payload['time'] = time()
     payload['uuid'] = str(uuid4())
     payload['content'] = content_prefix + payload['content']
@@ -74,20 +80,20 @@ def nexus_send(payload):  # REQUIRED: content
 
 
 def nexus_search(payload):
-    url = 'http://127.0.0.1:8888/search'
+    url = 'http://%s:%s/search' % (nexus_service_host, nexus_service_port)
     response = requests.request(method='POST', url=url, json=payload)
     return response.json()
 
 
 def nexus_bound(payload):
-    url = 'http://127.0.0.1:8888/bound'
+    url = 'http://%s:%s/bound' % (nexus_service_host, nexus_service_port)
     response = requests.request(method='POST', url=url, json=payload)
     #print(response)
     return response.json()
 
 
 def nexus_save():
-    url = 'http://127.0.0.1:8888/save'
+    url = 'http://%s:%s/save' % (nexus_service_host, nexus_service_port)
     response = requests.request(method='POST', url=url)
     print(response.text)
 
