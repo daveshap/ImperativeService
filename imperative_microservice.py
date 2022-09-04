@@ -52,23 +52,12 @@ def gpt3_completion(prompt, engine='text-davinci-002', temp=0.7, top_p=1.0, toke
             sleep(1)
 
 
-def get_embedding(payload):  # payload is a list of strings
-    # payload example: ['bacon bacon bacon', 'ham ham ham']
-    # response example:  [{'string': 'bacon bacon bacon', 'vector': '[1, 1 ... ]'}, {'string': 'ham ham ham', 'vector': '[1, 1 ... ]'}]
-    # embedding is already rendered as a JSON-friendly string
-    url = 'http://127.0.0.1:999'  # currently the USEv5 service, about 0.02 seconds per transaction!
-    response = requests.request(method='POST', url=url, json=payload)
-    return response.json()
-
-
 def nexus_send(payload):  # REQUIRED: content
     url = 'http://127.0.0.1:8888/add'
-    payload['time'] = time()
-    payload['uuid'] = str(uuid4())
     payload['content'] = content_prefix + payload['content']
-    embeddings = get_embedding([payload['content']])
-    payload['vector'] = embeddings[0]['vector']
-    payload['service'] = service_name
+    payload['microservice'] = 'heuristic_imperatives'
+    payload['model'] = 'text-davinci-002'
+    payload['type'] = 'core objective functions'
     response = requests.request(method='POST', url=url, json=payload)
     print(response.text)
 
@@ -82,14 +71,19 @@ def nexus_search(payload):
 def nexus_bound(payload):
     url = 'http://127.0.0.1:8888/bound'
     response = requests.request(method='POST', url=url, json=payload)
-    #print(response)
     return response.json()
 
 
-def nexus_save():
-    url = 'http://127.0.0.1:8888/save'
+def nexus_match():
+    url = 'http://127.0.0.1:8888/match'
     response = requests.request(method='POST', url=url)
-    print(response.text)
+    return response.json()
+
+
+def nexus_recent():
+    url = 'http://127.0.0.1:8888/recent'
+    response = requests.request(method='POST', url=url)
+    return response.json()
 
 
 def save_and_send(content, prefix, tag):
@@ -102,8 +96,7 @@ def save_and_send(content, prefix, tag):
 if __name__ == '__main__':
     while True:
         # get recent memories
-        payload = {'lower_bound': time() - tempo, 'upper_bound': time()}
-        recent = nexus_bound(payload)
+        recent = nexus_recent({'seconds': tempo})
         lines = [i['content'] for i in recent]
         textblock = ' '.join(lines)
         # TODO get relevant older memories too
